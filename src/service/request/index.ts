@@ -36,8 +36,6 @@ class Request {
     // 创建所有实例都有的拦截器
     this.instance.interceptors.request.use(
       (config) => {
-        console.log('所有实例都有的请求拦截器成功请求拦截')
-
         if (this.showLoading) {
           this.loading = ElLoading.service({
             lock: true,
@@ -48,18 +46,16 @@ class Request {
         return config
       },
       (err) => {
-        console.log('所有实例都有的拦截器失败请求拦截')
         return err
       }
     )
     this.instance.interceptors.response.use(
       (res) => {
         this.loading?.close()
-        console.log('所有实例都有的拦截器成功响应拦截')
-        return res
+        const data = res.data
+        return data
       },
       (err) => {
-        console.log('所有实例都有的拦截器失败响应拦截')
         return err
       }
     )
@@ -93,10 +89,10 @@ class Request {
     })
   }
 
-  get<T>(config: requestConfig<T>): Promise<T> {
+  get<T = any>(config: requestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'GET' })
   }
-  post<T>(config: requestConfig<T>): Promise<T> {
+  post<T = any>(config: requestConfig<T>): Promise<T> {
     return this.request<T>({ ...config, method: 'POST' })
   }
   delete<T>(config: requestConfig<T>): Promise<T> {
