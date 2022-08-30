@@ -9,13 +9,23 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/login',
+    name: 'login',
     component: () =>
       import(/* webpackChunkName: "home-chunk" */ '@/views/login/login.vue')
   },
   {
     path: '/main',
+    name: 'main',
     component: () =>
-      import(/* webpackChunkName: "home-chunk" */ '@/views/main/main.vue')
+      import(/* webpackChunkName: "main-chunk" */ '@/views/main/main.vue')
+  },
+  {
+    path: '/:patchMatch(.*)*',
+    name: 'notFound',
+    component: () =>
+      import(
+        /*webpackChunkName: "not-found-chunk"*/ '@/views/not-found/not-found.vue'
+      )
   }
 ]
 const router = createRouter({

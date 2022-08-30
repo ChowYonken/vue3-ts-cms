@@ -1,14 +1,15 @@
 import { Module } from 'vuex'
 import router from '@/router'
-import { IRootState } from '../types'
-import { ILoginState } from './types'
+import type { IRootState } from '../types'
+import type { ILoginState } from './types'
 import {
   accountLoginRequest,
   requestLoginUserInfoById,
   requestLoginUserMenuById
 } from '@/service/login/login'
-import { IAccount } from '@/service/login/types'
+import type { IAccount } from '@/service/login/types'
 import localCache from '@/utils/cache'
+import { mapMenusToRoutes } from '@/utils/map-menus'
 
 const loginModule: Module<ILoginState, IRootState> = {
   namespaced: true,
@@ -31,6 +32,14 @@ const loginModule: Module<ILoginState, IRootState> = {
     // 保存登录用户菜单
     changeUserMenus(state, userMenus: any) {
       state.userMenus = userMenus
+
+      // 添加动态路由
+      // 1.将菜单的路由添加到routes
+      const routes = mapMenusToRoutes(userMenus)
+      // 2.再将routes 映射到 router.main.children
+      routes.forEach((route) => {
+        router.addRoute('main', route)
+      })
     }
   },
   actions: {

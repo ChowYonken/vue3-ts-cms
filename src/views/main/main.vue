@@ -8,11 +8,15 @@
       <!-- 右侧内容 -->
       <el-container class="page">
         <!-- 标题 -->
-        <el-header class="page-title">
+        <el-header class="page-header">
           <nav-header @foldChange="handleFoldChange" />
         </el-header>
         <!-- 内容 -->
-        <el-main class="page-main">Main</el-main>
+        <el-main class="page-content">
+          <div class="page-info">
+            <router-view></router-view>
+          </div>
+        </el-main>
       </el-container>
     </el-container>
   </div>
@@ -54,6 +58,15 @@ export default defineComponent({
 
 .page-content {
   height: calc(100% - 48px);
+}
+
+.page-content {
+  height: calc(100% - 48px);
+
+  .page-info {
+    background-color: #fff;
+    border-radius: 5px;
+  }
 }
 
 .el-header,
