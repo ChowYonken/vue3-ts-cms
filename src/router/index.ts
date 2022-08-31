@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { RouteRecordRaw } from 'vue-router'
 import localCache from '@/utils/cache'
+import { firstMenu } from '@/utils/map-menus'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -40,6 +41,10 @@ router.beforeEach((to) => {
     if (!token) {
       return '/login'
     }
+  }
+  // 如果返回的是/mian 那么我们要给我默认路径
+  if (to.path === '/main') {
+    return firstMenu.url
   }
 })
 

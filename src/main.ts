@@ -19,8 +19,7 @@ const app = createApp(App)
 Object.keys(Icons).forEach((key) => {
   app.component(key, Icons[key as keyof typeof Icons])
 })
-
-app.use(router)
 app.use(store)
 setupStore()
+app.use(router)
 app.mount('#app')

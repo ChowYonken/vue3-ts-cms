@@ -1,4 +1,7 @@
 import { RouteRecordRaw } from 'vue-router'
+import type { IBreadCrumb } from '@/base-ui/breadCrumb'
+
+let firstMenu: any = null
 
 export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
   const routes: RouteRecordRaw[] = []
@@ -26,7 +29,10 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
         const route = allRoutes.find((route) => route.path === menu.url)
         if (route) {
           routes.push(route)
-          console.log(route)
+        }
+        // 如果firstMenu没有值 那么就将第一个值给他
+        if (!firstMenu) {
+          firstMenu = menu
         }
       } else {
         _recurseGetRoute(menu.children)
@@ -36,3 +42,36 @@ export function mapMenusToRoutes(userMenus: any[]): RouteRecordRaw[] {
   _recurseGetRoute(userMenus)
   return routes
 }
+
+// 1.获取当前路径
+// 2.然后当前路径 和 动态菜单对比 相等的就输出当前的id
+export function mapMenuId(
+  userMenus: any[],
+  currentPath: string,
+  breadCrumbs?: IBreadCrumb[]
+): any {
+  for (const menu of userMenus) {
+    if (menu.type === 1) {
+      // 递归操作
+      const finalMenu = mapMenuId(menu.children ?? [], currentPath)
+      if (finalMenu) {
+        // 比如面包屑是main / user
+        // 获取main
+        breadCrumbs?.push({ name: menu.name })
+        // 获取user
+        breadCrumbs?.push({ name: finalMenu.name })
+        return finalMenu
+      }
+    } else if (menu.type === 2 && menu.url === currentPath) {
+      return menu
+    }
+  }
+}
+
+export function pathMapBreadCrumb(userMenus: any[], currentPath: string): any {
+  const breadCrumbs: IBreadCrumb[] = []
+  mapMenuId(userMenus, currentPath, breadCrumbs)
+  return breadCrumbs
+}
+
+export { firstMenu }

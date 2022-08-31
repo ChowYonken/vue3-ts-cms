@@ -6,7 +6,7 @@
       <span class="title" v-if="!collapse">后台管理系统</span>
     </div>
     <el-menu
-      default-active="2"
+      :default-active="defaultActive"
       class="el-menu-vertical"
       :collapse="collapse"
       :collapse-transition="false"
@@ -66,9 +66,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from '@/store'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { mapMenuId } from '@/utils/map-menus'
 
 export default defineComponent({
   props: {
@@ -80,12 +81,19 @@ export default defineComponent({
   setup() {
     const store = useStore()
     const userMenus = computed(() => store.state.login.userMenus)
+
     const router = useRouter()
+    const route = useRoute()
+    const currentPath = route.path
+
+    const menu = mapMenuId(userMenus.value, currentPath)
+    const defaultActive = ref(menu.id + '')
+
     const handleMenuItemClick = (item: any) => {
       router.push({ path: item.url ?? '/not-found' })
     }
 
-    return { userMenus, handleMenuItemClick }
+    return { userMenus, defaultActive, handleMenuItemClick }
   }
 })
 </script>
