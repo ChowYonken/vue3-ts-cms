@@ -1,32 +1,40 @@
 <template>
   <div class="user">
     <page-search :searchFormConfig="searchFormConfig" />
-    <div class="content"></div>
+    <page-content
+      :contentTableConfig="contentTableConfig"
+      pageName="users"
+    ></page-content>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+
 import PageSearch from '@/components/page-search'
+import PageContent from '@/components/page-content'
+
 import { searchFormConfig } from './config/search-config'
+import { contentTableConfig } from './config/content-config'
 
 export default defineComponent({
   name: 'user',
   components: {
-    PageSearch
+    PageSearch,
+    PageContent
   },
   setup() {
-    return { searchFormConfig }
+    const selectionChange = (value: any) => {
+      console.log(value)
+    }
+
+    return {
+      searchFormConfig,
+      contentTableConfig,
+      selectionChange
+    }
   }
 })
 </script>
 
-<style scoped>
-.header {
-  color: red;
-}
-.handle-btns {
-  text-align: right;
-  padding: 0 50px 20px 0;
-}
-</style>
+<style scoped></style>

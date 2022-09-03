@@ -21,7 +21,7 @@
                   v-bind="item.otherOptions"
                   :show-password="item.type === 'password'"
                   style="width: 100%"
-                  v-model="formData[`${item.filed}`]"
+                  v-model="formData[`${item.field}`]"
                 ></el-input>
               </template>
               <!-- select表单 -->
@@ -30,7 +30,7 @@
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
                   style="width: 100%"
-                  v-model="formData[`${item.filed}`]"
+                  v-model="formData[`${item.field}`]"
                 >
                   <el-option
                     v-for="option in item.options"
@@ -45,7 +45,7 @@
                 <el-date-picker
                   v-bind="item.otherOptions"
                   style="width: 100%"
-                  v-model="formData[`${item.filed}`]"
+                  v-model="formData[`${item.field}`]"
                 ></el-date-picker>
               </template>
             </el-form-item>
@@ -97,6 +97,14 @@ export default defineComponent({
   setup(props, { emit }) {
     // 拷贝一份给formData 这时formData与user里的formData没有关联
     const formData = ref({ ...props.modelValue })
+
+    watch(
+      () => props.modelValue,
+      (newValue) => {
+        formData.value = { ...newValue }
+      }
+    )
+
     // 我们要监听formData的改变，发生改变就使用emit把事件传出去告知user里的formData修改
     // 因为我们要监听formData里的属性值变化 所以要深度监听
     watch(
