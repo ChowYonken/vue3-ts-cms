@@ -9,7 +9,9 @@
     >
       <!-- 标题 -->
       <template #headerHandler>
-        <el-button type="primary" v-if="isCreate">新建用户</el-button>
+        <el-button type="primary" v-if="isCreate" @click="handleNewClick"
+          >新建用户</el-button
+        >
       </template>
       <!-- 固定的插槽 -->
       <template #createAt="scope">
@@ -20,7 +22,13 @@
       </template>
       <template #handler="scope">
         <div class="handler">
-          <el-link type="primary" icon="edit" v-if="isUpdate">编辑</el-link>
+          <el-link
+            type="primary"
+            icon="edit"
+            v-if="isUpdate"
+            @click="handleEditClick(scope.row)"
+            >编辑</el-link
+          >
           <el-link
             type="danger"
             icon="delete"
@@ -69,7 +77,8 @@ export default defineComponent({
   components: {
     CkTable
   },
-  setup(props: any) {
+  emits: ['newBtnClick', 'editBtnClick'],
+  setup(props: any, { emit }) {
     const store = useStore()
 
     const selectionChange = (value: any) => {
@@ -129,6 +138,14 @@ export default defineComponent({
       })
     }
 
+    const handleNewClick = () => {
+      emit('newBtnClick')
+    }
+
+    const handleEditClick = (item: any) => {
+      emit('editBtnClick', item)
+    }
+
     return {
       isCreate,
       isUpdate,
@@ -140,7 +157,9 @@ export default defineComponent({
       getPageData,
       selectionChange,
       otherPropSlots,
-      handleDeletePageClick
+      handleDeletePageClick,
+      handleNewClick,
+      handleEditClick
     }
   }
 })

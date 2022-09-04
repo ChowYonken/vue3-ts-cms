@@ -2,7 +2,6 @@ import type { IRootState } from '@/store/types'
 import type { Module } from 'vuex'
 import type { ISystemState } from '@/store/main/system/types'
 import { getPageListData, deletePageData } from '@/service/main/system/system'
-import { id } from 'element-plus/es/locale'
 
 const systemModule: Module<ISystemState, IRootState> = {
   namespaced: true,
