@@ -7,7 +7,9 @@
       <template #footer>
         <div class="handle-btns">
           <el-button icon="refresh" @click="handleResetClick">重置</el-button>
-          <el-button type="primary" icon="search">搜索</el-button>
+          <el-button type="primary" icon="search" @click="handleSearchClick"
+            >搜索</el-button
+          >
         </div>
       </template>
     </ck-form>
@@ -25,10 +27,11 @@ export default defineComponent({
       require: true
     }
   },
+  emits: ['resetBtnClick', 'queryBtnClick'],
   components: {
     CkForm
   },
-  setup(props) {
+  setup(props, { emit }) {
     // 通过配置文件的field来决定这些属性
     // formData的属性动态决定
     // 获取配置里的formItems
@@ -42,13 +45,23 @@ export default defineComponent({
 
     // 监听重置按钮
     const handleResetClick = () => {
-      console.log(formOriginData)
+      // 1.通过v-model的方式
+      // for (const key in formOriginData) {
+      //   formData.value[`${key}`] = formOriginData[key]
+      // }
 
+      // 2.使用:model-value 与 @update:module-value
       formData.value = formOriginData
-      console.log(formData.value)
+
+      emit('resetBtnClick')
     }
 
-    return { formData, handleResetClick }
+    // 监听搜索按钮
+    const handleSearchClick = () => {
+      emit('queryBtnClick', formData.value)
+    }
+
+    return { formData, handleResetClick, handleSearchClick }
   }
 })
 </script>

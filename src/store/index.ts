@@ -3,6 +3,7 @@ import type { IRootState } from './types'
 import type { IStoreType } from './types'
 import login from './login/login'
 import system from './main/system/system'
+import product from './main/product/product'
 
 const store = createStore<IRootState>({
   state() {
@@ -13,7 +14,8 @@ const store = createStore<IRootState>({
   actions: {},
   modules: {
     login,
-    system
+    system,
+    product
   }
 })
 

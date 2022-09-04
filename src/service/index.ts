@@ -9,7 +9,9 @@ const request = new Request({
     requestInterceptor: (config) => {
       // 携带token拦截
       const token = localCache.getCache('token')
-      config.headers!.Authorization = token
+      if (token) {
+        config.headers!.Authorization = `Bearer ${token}`
+      }
       return config
     },
     requestInterceptorCatch: (err) => {

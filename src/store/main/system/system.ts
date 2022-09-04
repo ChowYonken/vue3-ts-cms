@@ -1,7 +1,8 @@
 import type { IRootState } from '@/store/types'
 import type { Module } from 'vuex'
 import type { ISystemState } from '@/store/main/system/types'
-import { getPageListData } from '@/service/main/system/system'
+import { getPageListData, deletePageData } from '@/service/main/system/system'
+import { id } from 'element-plus/es/locale'
 
 const systemModule: Module<ISystemState, IRootState> = {
   namespaced: true,
@@ -10,7 +11,11 @@ const systemModule: Module<ISystemState, IRootState> = {
       usersList: [],
       usersCount: 0,
       roleList: [],
-      roleCount: 0
+      roleCount: 0,
+      goodsList: [],
+      goodsCount: 0,
+      menuList: [],
+      menuCount: 0
     }
   },
   getters: {
@@ -24,6 +29,11 @@ const systemModule: Module<ISystemState, IRootState> = {
         //     return state.roleList
         // }
       }
+    },
+    pageListCount(state) {
+      return (pageName: string) => {
+        return (state as any)[`${pageName}Count`]
+      }
     }
   },
   mutations: {
@@ -36,22 +46,28 @@ const systemModule: Module<ISystemState, IRootState> = {
     changeRoleList(state, list: any[]) {
       state.roleList = list
     },
-    chaneRoleCount(state, count: number) {
+    changeRoleCount(state, count: number) {
       state.roleCount = count
+    },
+    changeGoodsList(state, list: any[]) {
+      state.goodsList = list
+    },
+    changeGoodsCount(state, count: number) {
+      state.goodsCount = count
+    },
+    changeMenuList(state, list: any[]) {
+      state.menuList = list
+    },
+    changeMenuCount(state, count: number) {
+      state.menuCount = count
     }
   },
   actions: {
+    // 获取数据列表网络请求
     async getPageListAction({ commit }, payload: any) {
       // 1. 获取pageUrl
       const pageName = payload.pageName
       const pageUrl = `/${pageName}/list`
-      // switch (pageName) {
-      //   case 'user':
-      //     pageUrl = 'users/list'
-      //     break
-      //   case 'role':
-      //     pageUrl = 'role/list'
-      // }
 
       // 2.对页面发送网络请求
       const pageResult = await getPageListData(pageUrl, payload.queryInfo)
@@ -62,15 +78,24 @@ const systemModule: Module<ISystemState, IRootState> = {
         pageName.slice(0, 1).toUpperCase() + pageName.slice(1)
       commit(`change${changePageName}List`, list)
       commit(`change${changePageName}Count`, totalCount)
-      // switch (pageName) {
-      //   case 'user':
-      //     commit('changeUserList', list)
-      //     commit('chaneUserCount', totalCount)
-      //     break
-      //   case 'role':
-      //     commit('changeRoleList', list)
-      //     commit('chaneRoleCount', totalCount)
-      // }
+    },
+    // 删除数据
+    async deletePageAction({ dispatch }, payload: any) {
+      // pageName
+      // id
+      // 获取pageName 和 id
+      const { pageName, id } = payload
+      const pageUrl = `/${pageName}/${id}`
+      // 调用删除网络请求
+      await deletePageData(pageUrl)
+      // 重新获取数据
+      dispatch('getPageListAction', {
+        pageName,
+        queryInfo: {
+          offset: 0,
+          size: 10
+        }
+      })
     }
   }
 }

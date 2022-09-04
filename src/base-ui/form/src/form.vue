@@ -21,7 +21,8 @@
                   v-bind="item.otherOptions"
                   :show-password="item.type === 'password'"
                   style="width: 100%"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 ></el-input>
               </template>
               <!-- select表单 -->
@@ -30,7 +31,8 @@
                   :placeholder="item.placeholder"
                   v-bind="item.otherOptions"
                   style="width: 100%"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 >
                   <el-option
                     v-for="option in item.options"
@@ -45,7 +47,8 @@
                 <el-date-picker
                   v-bind="item.otherOptions"
                   style="width: 100%"
-                  v-model="formData[`${item.field}`]"
+                  :model-value="modelValue[`${item.field}`]"
+                  @update:modelValue="handleValueChange($event, item.field)"
                 ></el-date-picker>
               </template>
             </el-form-item>
@@ -60,7 +63,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import type { IFormItem } from '../types'
 
 export default defineComponent({
@@ -95,27 +98,33 @@ export default defineComponent({
   },
   emits: ['update:modelValue'],
   setup(props, { emit }) {
+    // 1.v-model双向绑定
     // 拷贝一份给formData 这时formData与user里的formData没有关联
-    const formData = ref({ ...props.modelValue })
+    // const formData = ref({ ...props.modelValue })
 
-    watch(
-      () => props.modelValue,
-      (newValue) => {
-        formData.value = { ...newValue }
-      }
-    )
+    // watch(
+    //   () => props.modelValue,
+    //   (newValue) => {
+    //     formData.value = { ...newValue }
+    //   }
+    // )
 
-    // 我们要监听formData的改变，发生改变就使用emit把事件传出去告知user里的formData修改
-    // 因为我们要监听formData里的属性值变化 所以要深度监听
-    watch(
-      formData,
-      (newValue) => {
-        emit('update:modelValue', newValue)
-      },
-      { deep: true }
-    )
+    // // 我们要监听formData的改变，发生改变就使用emit把事件传出去告知user里的formData修改
+    // // 因为我们要监听formData里的属性值变化 所以要深度监听
+    // watch(
+    //   formData,
+    //   (newValue) => {
+    //     emit('update:modelValue', newValue)
+    //   },
+    //   { deep: true }
+    // )
 
-    return { formData }
+    // 2.使用:model-value 与 @update:module-value
+    const handleValueChange = (value: any, field: string) => {
+      emit('update:modelValue', { ...props.modelValue, [field]: value })
+    }
+
+    return { handleValueChange }
   }
 })
 </script>

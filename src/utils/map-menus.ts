@@ -74,4 +74,23 @@ export function pathMapBreadCrumb(userMenus: any[], currentPath: string): any {
   return breadCrumbs
 }
 
+// 映射用户权限按钮
+export function mapMenusToPermissions(userMenus: any[]) {
+  const permissions: string[] = []
+
+  const _recurseGetPermission = (menus: any[]) => {
+    for (const menu of menus) {
+      // 最后一级菜单才有permission
+      if (menu.type === 1 || menu.type === 2) {
+        _recurseGetPermission(menu.children ?? [])
+      } else if (menu.type === 3) {
+        permissions.push(menu.permission)
+      }
+    }
+  }
+  _recurseGetPermission(userMenus)
+
+  return permissions
+}
+
 export { firstMenu }
