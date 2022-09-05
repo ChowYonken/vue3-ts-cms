@@ -11,9 +11,7 @@
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = false">取消</el-button>
-          <el-button type="primary" @click="dialogVisible = false"
-            >确认</el-button
-          >
+          <el-button type="primary" @click="handleConfirmClick">确认</el-button>
         </span>
       </template>
     </el-dialog>
@@ -24,6 +22,8 @@
 import { defineComponent, ref, watch } from 'vue'
 
 import CkForm from '@/base-ui/form'
+
+import { useStore } from '@/store'
 
 export default defineComponent({
   components: {
@@ -37,11 +37,16 @@ export default defineComponent({
     defaultInfo: {
       type: Object,
       default: () => ({})
+    },
+    pageName: {
+      type: String,
+      default: ''
     }
   },
   setup(props) {
     const dialogVisible = ref(false)
     const formData = ref<any>({})
+    const store = useStore()
 
     watch(
       () => props.defaultInfo,
@@ -52,7 +57,26 @@ export default defineComponent({
       }
     )
 
-    return { dialogVisible, formData }
+    // 监听确认点击
+    const handleConfirmClick = () => {
+      dialogVisible.value = false
+      // 获取defaultInfo的key长度来判断是点击了编辑还是新建按钮
+      if (Object.keys(props.defaultInfo).length) {
+        // 编辑
+        store.dispatch('system/editPageDataAction', {
+          pageName: props.pageName,
+          editData: { ...formData.value },
+          id: props.defaultInfo.id
+        })
+      } else {
+        store.dispatch('system/createPageDataAction', {
+          pageName: props.pageName,
+          newData: { ...formData.value }
+        })
+      }
+    }
+
+    return { dialogVisible, formData, handleConfirmClick }
   }
 })
 </script>

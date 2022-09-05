@@ -54,7 +54,6 @@ const store = createStore<IRootState>({
 // 编写一个函数重新刷新会自动再次获取vuex数据
 export function setupStore() {
   store.dispatch('login/loadLocalLogin')
-  store.dispatch('getInitialDataAction')
 }
 
 // 封装userStore 给他加上类型
